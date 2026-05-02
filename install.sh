@@ -140,6 +140,8 @@ if [ "$PIHOLE_VERSION" -ne 6 ]; then
     read -rp "Press Enter to continue..."
 fi
 
+echo "Installing files..."
+
 # Use local files when possible, otherwise install from remote repository
 if \
     [ "$GIT_BRANCH" == "master" ] && \
@@ -155,7 +157,7 @@ if \
 
     if [ -f "$BIN_PATH/pihole-updatelists" ]; then
         if ! cmp -s "$SPATH/pihole-updatelists.php" "$BIN_PATH/pihole-updatelists"; then
-            echo "Backing up previous version..."
+            #echo "Backing up previous version..."
             $CP_CMD "$BIN_PATH/pihole-updatelists" "$VAR_TMP_PATH/pihole-updatelists.old" && \
             $CHMOD_CMD -x "$VAR_TMP_PATH/pihole-updatelists.old"
         fi
@@ -196,7 +198,7 @@ elif [ "$REMOTE_URL" != "" ] && [ "$GIT_BRANCH" != "" ]; then
         wget -nv -O /tmp/pihole-updatelists.php "$REMOTE_URL/$GIT_BRANCH/pihole-updatelists.php"
 
         if ! cmp -s "/tmp/pihole-updatelists.php" "$BIN_PATH/pihole-updatelists"; then
-            echo "Backing up previous version..."
+            #echo "Backing up previous version..."
             $CP_CMD "$BIN_PATH/pihole-updatelists" "$VAR_TMP_PATH/pihole-updatelists.old" && \
             $CHMOD_CMD -x "$VAR_TMP_PATH/pihole-updatelists.old"
         fi
@@ -276,7 +278,6 @@ if [ "$ENTWARE" == 1 ]; then
 
         if [ "$ROOT_USER" != "root" ] && grep -Fq "  root  " /opt/etc/cron.d/pihole-updatelists; then
             echo "Warning: Root user is not called root ($ROOT_USER) - correcting username in crontab..."
-
             sed "s/  root  /  $ROOT_USER  /g" -i /opt/etc/cron.d/pihole-updatelists
         fi
     fi
@@ -334,3 +335,5 @@ if [ "$DOCKER" == 1 ]; then
         exit 1
     fi
 fi
+
+echo "Installation completed successfully."

@@ -895,17 +895,12 @@ function updateScript(array $options = [], array $config = [])
     if ($status === false) {
         print 'See changes in commit history - https://github.com/jacklul/pihole-updatelists/commits/' . $branch . PHP_EOL . PHP_EOL;
 
-        if (isset($options['yes']) || isset($options['force']) || expectUserInput('Update now? [Y/N]', ['y', 'yes'])) {
+        if (isset($options['yes']) || isset($options['force']) || expectUserInput('Update now? [y/N]', ['y', 'yes'])) {
             $script_md5 = md5_file(__FILE__);
 
             print 'Downloading and running install script from "' . GITHUB_LINK_RAW . '/' . $branch . '/install.sh"...' . PHP_EOL . PHP_EOL;
             passthru('wget -nv -O - ' . GITHUB_LINK_RAW . '/' . $branch . '/install.sh | bash -s ' . $branch, $return);
-
             clearstatcache();
-
-            if (file_exists('/var/tmp/pihole-updatelists.old') && $script_md5 != md5_file(__FILE__)) {
-                print PHP_EOL . 'Use "' . basename(__FILE__) . ' --rollback" to return to the previous script version!' . PHP_EOL;
-            }
 
             exit($return);
         } else {
@@ -976,7 +971,7 @@ function printVersion(array $options = [], array $config = [], $return = false)
         exit(1);
     }
 
-    print 'Remote checksum: ' . md5($remoteScript[$branch]) . PHP_EOL;
+    print 'Remote checksum: ' . md5($remoteScript[$branch]) . PHP_EOL . PHP_EOL;
 
     if ($updateCheck === true) {
         print 'The script is up to date!' . PHP_EOL;
