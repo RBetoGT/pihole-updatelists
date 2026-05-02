@@ -1070,6 +1070,7 @@ function loadConfig(array $options = [])
         'MIGRATION_MODE'          => 1,
         'GROUP_EXCLUSIVE'         => false,
         'UPDATE_GRAVITY'          => true,
+        'WARMUP_DNS_CACHE'        => false,
         'VERBOSE'                 => false,
         'DEBUG'                   => false,
         'DOWNLOAD_TIMEOUT'        => 60,
@@ -2757,6 +2758,27 @@ if ($remoteListsAreSet === false) {
 
 // Update gravity (run `pihole updateGravity`) or sends signal to pihole-FTL to reload lists
 if ($config['UPDATE_GRAVITY'] === true) {
+    if ($config['WARMUP_DNS_CACHE'] === true) {
+        printAndLog('Warming up DNS cache...' . PHP_EOL);
+
+        if (($sth = $dbh->prepare('SELECT address FROM `vw_adlist`'))->execute()) {
+            $adresses = $sth->fetchAll(PDO::FETCH_ASSOC);    
+
+            $domains = [];
+            foreach ($adresses as $adlist) {
+                if (($domain = parse_url($adlist['address'], PHP_URL_HOST)) && !in_array($domain, $domains, true)) {
+                    $domains[] = $domain;
+
+                    putenv('RES_OPTIONS=retrans:1 retry:1 timeout:1 attempts:1');
+                    @gethostbyname($domain);
+                }
+            }
+        } else {
+            printAndLog('Failed to fetch list of adlists!' . PHP_EOL, 'WARNING');
+            incrementStat('warnings');
+        }
+    }
+
     $sth = $dbh = null; // Close any database handles
 
     if ($config['DEBUG'] === true) {

@@ -195,6 +195,7 @@ sudo nano /etc/pihole-updatelists.conf
 | MIGRATION_MODE | 1 | Decides how to migrate disabled entries from another config sections <br>1 - replace comment field <br>2 - append to comment field <br>0 - disables migration, entry will be ignored
 | GROUP_EXCLUSIVE | false | Causes defined group in `GROUP_ID` to contain one defined list exclusively - only entries from the last list inserted will be enabled <br>**This option is experimental**
 | UPDATE_GRAVITY | true | Update gravity after lists are updated? (runs `pihole updateGravity`) <br>When `false` invokes lists reload instead <br>Set to `null` to do nothing |
+| WARMUP_DNS_CACHE | false | Resolve all blocklist/allowlist domains using local resolver before running gravity update<br>This can fix "list was inaccessible" warnings in Pi-hole when using recursive resolver like Unbound |
 | VERBOSE | false | Show more information while the script is running |
 | DEBUG | false | Show debug messages for troubleshooting purposes <br>**If you're having issues - this might help tracking it down** |
 | DOWNLOAD_TIMEOUT | 60 | Maximum time in seconds one list download can take before giving up <br>You should increase this when downloads fail because of timeout |
