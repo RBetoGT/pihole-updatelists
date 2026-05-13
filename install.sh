@@ -273,6 +273,10 @@ if [ "$ENTWARE" == 1 ]; then
     # While on most systems crontab will accept 644 here, cron in Entware requires 600
     chmod 600 "$ETC_PATH/cron.d/pihole-updatelists"
 
+	# Add /opt/bin to the PATH to make sure PHP can be found via /usr/bin/env
+    sed "s|  $BIN_PATH/pihole-updatelists|  PATH=\"\$PATH:/opt/bin\" $BIN_PATH/pihole-updatelists|g" -i /opt/etc/cron.d/pihole-updatelists
+
+	# Correct root's username
     if command -v id >/dev/null 2>&1; then
         ROOT_USER="$(id -nu 0 2> /dev/null)"
 
