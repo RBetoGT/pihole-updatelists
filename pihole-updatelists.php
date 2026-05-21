@@ -1732,7 +1732,7 @@ foreach ($configSections as $configSectionName => $configSectionData) {
 set_exception_handler(
     function (Throwable $e) use (&$config) {
         if ($config['DEBUG'] === false) {
-            print 'Exception: ' . $e->getMessage() . PHP_EOL;
+            print 'Exception: ' . $e->getMessage() . '(line ' . $e->getLine() . ')' . PHP_EOL;
         }
 
         printAndLog($e . PHP_EOL, 'ERROR', $config['DEBUG'] === false);
