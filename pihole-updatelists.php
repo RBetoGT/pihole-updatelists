@@ -1906,12 +1906,12 @@ foreach ($configSections as $configSectionName => $configSectionData) {
 
                         $listContents = @fetchFileContents($url, $httpOptions);
 
-                        if (isSingleAdlist($listContents)) {
-                            $listContents = $url;
-                        }
-
                         if ($listContents !== false) {
                             printAndLog(' done' . PHP_EOL);
+
+                            if (isSingleAdlist($listContents)) {
+                                $listContents = $url;
+                            }
 
                             $contents .= PHP_EOL . $listContents;
                         } else {
